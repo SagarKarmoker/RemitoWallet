@@ -6,7 +6,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -14,7 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview(showBackground = true)
 fun TopNavBar(
     title: String? = null,
-    onBack: (() -> Unit)? = null
+    onBack: (() -> Unit)? = null,
+    color: Color? = Color.White
 ){
     TopAppBar(
         title = { title },
@@ -24,6 +27,7 @@ fun TopNavBar(
             }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(color ?: Color.White)
     )
 }

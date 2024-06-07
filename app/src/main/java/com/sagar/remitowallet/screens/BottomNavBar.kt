@@ -18,7 +18,9 @@ import androidx.compose.ui.res.painterResource
 import com.sagar.remitowallet.R
 
 @Composable
-fun BottomNavBar(){
+fun BottomNavBar(
+    color: Color?= Color.White
+){
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf("Yield", "Pay", "Home", "Swap", "Account")
     val icons = listOf(
@@ -29,28 +31,30 @@ fun BottomNavBar(){
         Icons.Filled.AccountCircle
     )
 
-    NavigationBar(
-        containerColor = Color.White
-    ) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                icon = {
-                    if (icons[index] is Int)
-                        Icon(
-                            painter = painterResource(id = icons[index] as Int),
-                            contentDescription = item
-                        )
-                    else
-                        Icon(
-                            imageVector = icons[index] as ImageVector,
-                            contentDescription = item
-                        )
-                },
-                label = { Text(item) },
-                selected = selectedItem == index,
-                onClick = { selectedItem = index },
-                alwaysShowLabel = false
-            )
+    if (color != null) {
+        NavigationBar(
+            containerColor = color
+        ) {
+            items.forEachIndexed { index, item ->
+                NavigationBarItem(
+                    icon = {
+                        if (icons[index] is Int)
+                            Icon(
+                                painter = painterResource(id = icons[index] as Int),
+                                contentDescription = item
+                            )
+                        else
+                            Icon(
+                                imageVector = icons[index] as ImageVector,
+                                contentDescription = item
+                            )
+                    },
+                    label = { Text(item) },
+                    selected = selectedItem == index,
+                    onClick = { selectedItem = index },
+                    alwaysShowLabel = false
+                )
+            }
         }
     }
 }
