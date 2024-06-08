@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.sagar.remitowallet.screens.SwapScreen
+import com.sagar.remitowallet.screens.ProfileScreen
 import com.sagar.remitowallet.ui.theme.RemitoWalletTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +17,9 @@ class MainActivity : ComponentActivity() {
                 //SendScreen()
                 //PaymentScreen()
                 //WalletDashboard()
-                SwapScreen()
+                //SwapScreen()
+                //SwapConfirmScreen()
+                ProfileScreen()
             }
         }
     }

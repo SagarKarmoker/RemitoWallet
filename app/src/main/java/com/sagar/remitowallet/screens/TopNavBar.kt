@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 @Preview(showBackground = true)
 fun TopNavBar(
-    title: String? = null,
+    title: @Composable (() -> Unit?)? = null,
     onBack: (() -> Unit)? = null,
     color: Color? = Color.White
 ){
