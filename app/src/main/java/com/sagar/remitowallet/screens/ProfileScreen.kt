@@ -15,8 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -33,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -89,12 +96,48 @@ fun ProfileScreen() {
                         top = 16.dp
                     )
                 ) {
-                    items(10) {
+                    item {
                         Options(
                             optionName = "Account Profile",
+                            icon = Icons.Default.Face,
                             optionDetails = "Your account profile"
                         )
                         Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Account Verification",
+                            icon = Icons.Default.VerifiedUser,
+                            optionDetails = "Not Verified"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Bank Account",
+                            icon = Icons.Default.AccountBalance,
+                            optionDetails = "Your bank accounts"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Security",
+                            icon = Icons.Default.Security,
+                            optionDetails = "Accounts security"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Default Currency",
+                            icon = Icons.Default.CurrencyExchange,
+                            optionDetails = "Choose your default currency"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Language",
+                            icon = Icons.Default.Language,
+                            optionDetails = "Choose Language"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Options(
+                            optionName = "Help and Support",
+                            icon = Icons.Default.Help,
+                            optionDetails = "Get Support"
+                        )
                     }
                     item {
                         LogOut()
@@ -136,9 +179,9 @@ fun LogOut() {
 
 @Composable
 fun Options(
-    optionName: String? = null,
-    icon: Int? = null,
-    optionDetails: String? = null,
+    optionName: String,
+    icon: ImageVector,
+    optionDetails: String,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -161,7 +204,7 @@ fun Options(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.Face, contentDescription = "more")
+                Icon(imageVector = icon, contentDescription = "more")
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     if (optionName != null) {
