@@ -15,7 +15,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -25,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -79,119 +83,167 @@ fun SwapScreen() {
                         horizontal = 16.dp,
                     )
             ) {
-                OutlinedTextField(
-                    value = fromAmount.value, onValueChange = {
-                        fromAmount.value = it
-                    }, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    trailingIcon = {
-                        /*IconButton(onClick = { }) {
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.btc),
-                                contentDescription = "Dropdown"
-                            )
-                        }*/
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = greeny,
-                        unfocusedBorderColor = greeny,
-                    ),
-                    placeholder = {
-                        Text(
-                            text = "0.00", fontSize = 40.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.SansSerif
-                        )
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif
-                    ),
-                    prefix = {
-                        Text(
-                            text = fromCurrency.value,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.SansSerif
-                        )
-                    }
+                Currency(fromCurrency, fromAmount)
+                SwapCurrency(
+                    fromCurrency,
+                    toCurrency,
+                    fromAmount,
+                    toAmount
                 )
-
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Divider(color = Color.Black)
-                    IconButton(
-                        onClick = {
-                            val currencyAmountChange = fromAmount.value
-                            fromAmount.value = toAmount.value
-                            toAmount.value = currencyAmountChange
-
-                            val currencyChange = fromCurrency.value
-                            fromCurrency.value = toCurrency.value
-                            toCurrency.value = currencyChange
-                        },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Image(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.fab_swap),
-                            contentDescription = "Swap"
-                        )
-                    }
-                }
-
-                OutlinedTextField(
-                    value = toAmount.value, onValueChange = {
-                        toAmount.value = it
-                    }, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    trailingIcon = {
-                        /*IconButton(onClick = { *//*TODO*//* }) {
-                            Image(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.btc),
-                                contentDescription = "Dropdown"
-                            )
-                        }*/
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = greeny,
-                        unfocusedBorderColor = greeny,
-                    ),
-                    placeholder = {
-                        Text(
-                            text = "0.00", fontSize = 40.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.SansSerif
-                        )
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif
-                    ),
-                    prefix = {
-                        Text(
-                            text = toCurrency.value,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.SansSerif
-                        )
-                    }
-                )
-
+                Currency(toCurrency, toAmount)
                 Spacer(modifier = Modifier.height(16.dp))
                 SwapButton()
 
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CurrencySelect(){
+    val currencies = listOf(
+        painterResource(id = R.drawable.btc),
+        painterResource(id = R.drawable.eth),
+        painterResource(id = R.drawable.usdt)
+    )
+
+    val currenciesCode = listOf(
+        "BTC","ETH","USDT"
+    )
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedCurrency by remember {
+        mutableStateOf(currencies[0])
+    }
+
+    var selectedCurrencyCode by remember {
+        mutableStateOf(currenciesCode[0])
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ExposedDropdownMenuBox(
+            expanded = isExpanded,
+            onExpandedChange = { isExpanded = !isExpanded },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(painter = selectedCurrency, contentDescription = selectedCurrencyCode,
+                modifier = Modifier.menuAnchor().size(48.dp)
+                )
+
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false }
+            ) {
+                currencies.forEach { currency ->
+                    DropdownMenuItem(
+                        text = {
+                            Image(
+                                painter = currency,
+                                contentDescription = selectedCurrencyCode,
+                                modifier = Modifier
+                                    .size(48.dp)
+                            )
+                        },
+                        onClick = {
+                            selectedCurrency = currency
+                            isExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SwapCurrency(
+    fromCurrency: MutableState<String>,
+    toCurrency: MutableState<String>,
+    fromAmount: MutableState<String>,
+    toAmount: MutableState<String>
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Divider(color = Color.Black)
+        IconButton(
+            onClick = {
+                val currencyAmountChange = fromAmount.value
+                fromAmount.value = toAmount.value
+                toAmount.value = currencyAmountChange
+
+                val currencyChange = fromCurrency.value
+                fromCurrency.value = toCurrency.value
+                toCurrency.value = currencyChange
+            },
+            modifier = Modifier.size(48.dp)
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.fab_swap),
+                contentDescription = "Swap"
+            )
+        }
+    }
+}
+
+@Composable
+fun Currency(
+    currency: MutableState<String>,
+    amount: MutableState<String>,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = amount.value,
+            onValueChange = {
+                amount.value = it
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(vertical = 8.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = greeny,
+                unfocusedBorderColor = greeny,
+            ),
+            placeholder = {
+                Text(
+                    text = "0.00", fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+            },
+            textStyle = TextStyle(
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.SansSerif
+            ),
+            prefix = {
+                Text(
+                    text = currency.value,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+            },
+        )
+
+        CurrencySelect()
     }
 }
 
@@ -222,9 +274,11 @@ fun SwapButton() {
                 sheetState = sheetState
             ) {
 
-                Text("Swapping cost", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+                Text(
+                    "Swapping cost", modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold
+                )
 
                 Row(
                     modifier = Modifier
@@ -251,12 +305,13 @@ fun SwapButton() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Sheet content
-                    Button(onClick = {
-                        //SwapConfirmScreen()
+                    Button(
+                        onClick = {
+                            //SwapConfirmScreen()
 //                        Navigate to SwapConfirmScreen using your preferred navigation method
-                    },
+                        },
                         modifier = Modifier.weight(1f)
-                        ) {
+                    ) {
                         Text("Confirm swap")
                     }
                 }
